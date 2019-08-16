@@ -3,14 +3,22 @@
 <% db_name = 'goya' %>
 <% connection = PG::connect(dbname: db_name) %>
 <% connection.internal_encoding = 'UTF-8' %>
+<% goya_not_self = [] %>
+<% goya_quality_false = [] %>
 
-<% goya_data = [] %>
 <!-- 譲渡先が自家消費ではないもの -->
 <% sql = "select * from crops where give_for != '自家消費';" %>
-<% result = connection.exec(sql) %>
+<% result_not_self = connection.exec(sql) %>
 
-<% result.each do |record| %>
-  <% goya_data << "大きさ : #{record['length']} 重さ : #{record['weight']} 品質 : #{record['quality']} 売った相手 : #{record['give_for']} 売った日付 : #{record['date']}" %>
+<% result_not_self.each do |record| %>
+<% goya_not_self << "大きさ : #{record['length']} 重さ : #{record['weight']} 品質 : #{record['quality']} 売った相手 : #{record['give_for']} 売った日付 : #{record['date']}" %>
+<% end %>
+
+<!--品質が悪いもの -->
+<% sql = "select * from crops where quality = false;" %>
+<% result_quality_false = connection.exec(sql) %>
+<% result_quality_false.each do |record| %>
+  <% goya_quality_false << "大きさ : #{record['length']} 重さ : #{record['weight']} 品質 : #{record['quality']} 売った相手 : #{record['give_for']} 売った日付 : #{record['date']}" %>
 <% end %>
 
 <html lang="ja">
@@ -24,14 +32,16 @@
 
   <form action="goya.cgi" method="POST">
     <p>ボタンを押すと、譲渡先が自家消費ではないもののゴーヤの情報ページへ飛びます</p>
-    <p><input type="text" name="goya" value="<%= goya_data.join(' ') %>"></p>
+    <p><input type="text" name="goya" value="<%= goya_not_self.join(' ') %>"></p>
+    <input type="hidden" name="title" value="譲渡先が自家消費ではないゴーヤ">
     <p><input type="submit" value="送信"></p>
     <br>
   </form>
 
   <form action="goya.cgi" method="POST">
     <p>ボタンを押すと、品質が悪いもののゴーヤの情報ページへ飛びます</p>
-    <p><input type="text" name="goya" value="<%= '品質が悪いもの' %>">
+    <p><input type="text" name="goya" value="<%= goya_quality_false.join(' ') %>">
+    <input type="hidden" name="title" value="品質が悪いゴーヤ">
     <p><input type="submit" value="送信"></p>
   </form>
 </body>
