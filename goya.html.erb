@@ -17,6 +17,7 @@
 <!--品質が悪いもの -->
 <% sql = "select * from crops where quality = false;" %>
 <% result_quality_false = connection.exec(sql) %>
+
 <% result_quality_false.each do |record| %>
   <% goya_quality_false << "大きさ : #{record['length']} 重さ : #{record['weight']} 品質 : #{record['quality']} 売った相手 : #{record['give_for']} 売った日付 : #{record['date']}" %>
 <% end %>
