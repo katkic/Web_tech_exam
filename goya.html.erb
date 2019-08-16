@@ -1,35 +1,37 @@
-  <% require 'pg' %>
+<% require 'pg' %>
 
-  <% db_name = 'goya' %>
-  <% connection = PG::connect(dbname: db_name) %>
-  <% connection.internal_encoding = 'UTF-8' %>
+<% db_name = 'goya' %>
+<% connection = PG::connect(dbname: db_name) %>
+<% connection.internal_encoding = 'UTF-8' %>
 
-  <% sql = 'select date, weight, give_for from crops;' %>
-  <% result = connection.exec(sql) %>
-  <% date = [] %>
+<% goya_data = [] %>
+<!-- 譲渡先が自家消費ではないもの -->
+<% sql = "select * from crops where give_for != '自家消費';" %>
+<% result = connection.exec(sql) %>
 
-  <% result.each do |record| %>
-    <% date << "ゴーヤの大きさ : #{record['weight']} 売った相手 : #{record['give_for']}" %>
-  <% end %>
+<% result.each do |record| %>
+  <% goya_data << "大きさ : #{record['length']} 重さ : #{record['weight']} 品質 : #{record['quality']} 売った相手 : #{record['give_for']} 売った日付 : #{record['date']}" %>
+<% end %>
 
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <title>Web Server test</title>
 </head>
-<body>
-  <h1>テスト!!!!!!!!!!!!!</h1>
 
-  <form action="indicate.cgi" method="POST">
+<body>
+  <h1>ゴーヤの部屋</h1>
+
+  <form action="goya.cgi" method="POST">
     <p>ボタンを押すと、譲渡先が自家消費ではないもののゴーヤの情報ページへ飛びます</p>
-    <p><input type="text" name="input" value="<%= '譲渡先が自家消費ではないもの' %>"></p>
+    <p><input type="text" name="goya" value="<%= goya_data.join(' ') %>"></p>
     <p><input type="submit" value="送信"></p>
     <br>
   </form>
 
   <form action="goya.cgi" method="POST">
     <p>ボタンを押すと、品質が悪いもののゴーヤの情報ページへ飛びます</p>
-    <p><input type="text" name="goya" value="<%= 品質が悪いもの %>">
+    <p><input type="text" name="goya" value="<%= '品質が悪いもの' %>">
     <p><input type="submit" value="送信"></p>
   </form>
 </body>
