@@ -11,7 +11,7 @@
 <% result_not_self = connection.exec(sql) %>
 
 <% result_not_self.each do |record| %>
-<% goya_not_self << "大きさ : #{record['length']} 重さ : #{record['weight']} 品質 : #{record['quality']} 売った相手 : #{record['give_for']} 売った日付 : #{record['date']}" %>
+  <% goya_not_self << "大きさ : #{record['length']} 重さ : #{record['weight']} 品質 : #{record['quality']} 売った相手 : #{record['give_for']} 売った日付 : #{record['date']}" %>
 <% end %>
 
 <!--品質が悪いもの -->
@@ -32,7 +32,7 @@
   <h1>ゴーヤの部屋</h1>
 
   <form action="goya.cgi" method="POST">
-    <p>ボタンを押すと、譲渡先が自家消費ではないもののゴーヤの情報ページへ飛びます</p>
+    <p>ボタンを押すと、譲渡先が自家消費ではないゴーヤの情報ページへ飛びます</p>
     <p><input type="text" name="goya" value="<%= goya_not_self.join(' ') %>"></p>
     <input type="hidden" name="title" value="譲渡先が自家消費ではないゴーヤ">
     <p><input type="submit" value="送信"></p>
@@ -40,7 +40,7 @@
   </form>
 
   <form action="goya.cgi" method="POST">
-    <p>ボタンを押すと、品質が悪いもののゴーヤの情報ページへ飛びます</p>
+    <p>ボタンを押すと、品質が悪いゴーヤの情報ページへ飛びます</p>
     <p><input type="text" name="goya" value="<%= goya_quality_false.join(' ') %>">
     <input type="hidden" name="title" value="品質が悪いゴーヤ">
     <p><input type="submit" value="送信"></p>
